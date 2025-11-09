@@ -185,3 +185,55 @@ if(BUILD_CXX)
         add_subdirectory(examples/cxx)
     endif()
 endif()
+
+
+#
+########## CPack Configuration for Debian Package ##########
+#
+
+# Detect or allow override of distro codename (jammy, noble, focal, etc.)
+if(NOT DEFINED DISTRO_CODENAME)
+    execute_process(
+        COMMAND lsb_release -sc
+        OUTPUT_VARIABLE DISTRO_CODENAME
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        ERROR_QUIET
+    )
+    if(NOT DISTRO_CODENAME)
+        set(DISTRO_CODENAME "unknown")
+    endif()
+endif()
+message(STATUS "[i] Building package for distro: ${DISTRO_CODENAME}")
+
+# Basic package information
+set(CPACK_PACKAGE_NAME "iceoryx2-dev")
+set(CPACK_PACKAGE_VERSION "${IOX2_VERSION}")
+set(CPACK_PACKAGE_VENDOR "Eclipse iceoryx")
+set(CPACK_PACKAGE_CONTACT "iceoryx-oss-support@ekxide.io")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "iceoryx2 - Zero-Copy Lock-Free IPC Middleware")
+set(CPACK_PACKAGE_DESCRIPTION "iceoryx2 is an efficient, and ultra-low latency inter-process communication middleware. This library provides fast and reliable zero-copy and lock-free inter-process communication mechanisms with C/C++ language bindings.")
+
+# License information
+set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE-APACHE")
+
+# Debian-specific settings
+set(CPACK_GENERATOR "DEB")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "${CPACK_PACKAGE_CONTACT}")
+set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
+set(CPACK_DEBIAN_PACKAGE_PRIORITY "optional")
+set(CPACK_DEBIAN_PACKAGE_HOMEPAGE "https://github.com/eclipse-iceoryx/iceoryx2")
+
+# Enable automatic dependency detection for shared libraries
+set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+
+# Custom package file name: iceoryx2-dev_0.7.0_jammy_amd64.deb
+set(CPACK_DEBIAN_FILE_NAME "${CPACK_PACKAGE_NAME}_${CPACK_PACKAGE_VERSION}_${DISTRO_CODENAME}_${CMAKE_SYSTEM_PROCESSOR}.deb")
+
+# Install all components (lib and dev)
+set(CPACK_COMPONENTS_ALL lib dev bin)
+set(CPACK_DEB_COMPONENT_INSTALL OFF)
+
+# Additional metadata
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "iceoryx2")
+
+include(CPack)

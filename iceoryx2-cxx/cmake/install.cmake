@@ -20,9 +20,12 @@ set(${PROJECT_NAME}_DIR ${PROJECT_SOURCE_DIR}/cmake
     FORCE
 )
 
-if(ICEORYX_WITH_FETCH_CONTENT)
-    return()
-endif()
+# Note: Installation with FetchContent is enabled for bundled packaging.
+# When building standalone packages, ensure iceoryx_hoofs is installed separately
+# or use -DCMAKE_PREFIX_PATH to point to an existing iceoryx installation.
+# if(ICEORYX_WITH_FETCH_CONTENT)
+#     return()
+# endif()
 
 #
 ########## set variables for export ##########

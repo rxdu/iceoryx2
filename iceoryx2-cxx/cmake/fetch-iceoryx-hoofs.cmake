@@ -28,7 +28,7 @@ if(NOT iceoryx_platform_FOUND OR NOT iceoryx_hoofs_FOUND)
         iceoryx
         GIT_REPOSITORY https://github.com/eclipse-iceoryx/iceoryx.git
         GIT_TAG v${ICEORYX_HOOFS_VERSION}
-        EXCLUDE_FROM_ALL
+        # EXCLUDE_FROM_ALL removed to enable installation for bundled packaging
     )
     FetchContent_GetProperties(iceoryx)
     if (NOT iceoryx_POPULATED)
@@ -47,20 +47,17 @@ if(ICEORYX_WITH_FETCH_CONTENT)
     set(BUILD_TEST OFF)
 
     # use iceoryx platform and hoofs in source code version
-    add_subdirectory(${iceoryx_SOURCE_DIR}/iceoryx_platform  ${iceoryx_BINARY_DIR}/iceoryx_platform EXCLUDE_FROM_ALL)
-    add_subdirectory(${iceoryx_SOURCE_DIR}/iceoryx_hoofs ${iceoryx_BINARY_DIR}/iceoryx_hoofs EXCLUDE_FROM_ALL)
+    # EXCLUDE_FROM_ALL removed to enable installation for bundled packaging
+    add_subdirectory(${iceoryx_SOURCE_DIR}/iceoryx_platform  ${iceoryx_BINARY_DIR}/iceoryx_platform)
+    add_subdirectory(${iceoryx_SOURCE_DIR}/iceoryx_hoofs ${iceoryx_BINARY_DIR}/iceoryx_hoofs)
 
     find_package(iceoryx_platform ${ICEORYX_HOOFS_VERSION} REQUIRED)
     find_package(iceoryx_hoofs ${ICEORYX_HOOFS_VERSION} REQUIRED)
 endif()
 
 if(ICEORYX_WITH_FETCH_CONTENT)
-message(WARNING
-    "The project was built by obtaining iceoryx with FetchContent. "
-    "Language bindings produced by this build are not relocatable, "
-    "so they have been removed from the install target. "
-    "This is fine for development, but for production it is "
-    "recommended to use an existing installation with\n"
-    "'-DCMAKE_PREFIX_PATH=/full/path/to/installed/iceoryx'! "
+message(STATUS
+    "Building with iceoryx obtained via FetchContent. "
+    "Both iceoryx_hoofs and iceoryx2 will be bundled in the installation package."
 )
 endif()
